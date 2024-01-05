@@ -1,0 +1,32 @@
+version: '3'
+services:
+  newpostgres:
+    image: serry22/postgresproject:postgrestag
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  rediscontainer:
+    image: redis:latest
+    depends_on:
+      - newpostgres
+  server:
+    image: server:appss
+    healthcheck:
+        test:  curl localhost:7000 ||  bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+        interval: 10s
+        timeout: 30s
+        retries: 3
+    restart: always
+    depends_on:
+      - rediscontainer
+
+  worker:
+    image: worker:app
+    depends_on:
+      - server 
+  nginx:
+    image: nginx:latest
+    ports:
+      - "7000:80"
+    depends_on:
+      - worker
