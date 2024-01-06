@@ -2,7 +2,7 @@
 FROM nginx:latest
 
 # rm your custom Nginx configuration file to the container
-RUN rm  /etc/nginx/conf.d/default.conf  
+RUN rm -f /etc/nginx/conf.d/default.conf  
 
 # (Optional) Add any additional configurations or files as needed
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
